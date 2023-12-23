@@ -62,6 +62,9 @@ public class SessionChatHandler implements ChatHandler<SessionPlayerChat> {
                 return null;
               }
 
+              if (!packet.isSigned())
+                  return null;
+
               if (chatResult.getMessage().map(str -> !str.equals(packet.getMessage()))
                   .orElse(false)) {
                 if (packet.isSigned()) {
