@@ -8,7 +8,6 @@ netty = "4.1.100.Final"
 [plugins]
 indra-publishing = "net.kyori.indra.publishing:2.0.6"
 shadow = "com.github.johnrengelman.shadow:8.1.0"
-spotless = "com.diffplug.spotless:6.12.0"
 
 [libraries]
 # See JD links in velocity-apo when moving to non-snapshot versions

@@ -30,6 +30,11 @@ import net.kyori.adventure.text.Component;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.TextDecoration.*;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.event.ClickEvent;
+
 public class KeyedChatHandler implements
     com.velocitypowered.proxy.protocol.packet.chat.ChatHandler<KeyedPlayerChat> {
 
@@ -49,19 +54,22 @@ public class KeyedChatHandler implements
   }
 
   public static void invalidCancel(Logger logger, ConnectedPlayer player) {
-    logger.fatal("A plugin tried to cancel a signed chat message."
-        + " This is no longer possible in 1.19.1 and newer. "
-        + "Disconnecting player " + player.getUsername());
-    player.disconnect(Component.text("A proxy plugin caused an illegal protocol state. "
-        + "Contact your network administrator."));
+    player.sendMessage(Component.text("Please download & install a mod that prevents signed chat messages.\n\n", DARK_RED)
+            .append(Component.text("Signing puts your account at risk of being incorrectly banned, the implementation allows for third parties to omit messages and may paint you as a bad actor.\n\n", RED)
+            .append(Component.text("If you want to learn more, i recommend this video by Aizistral which goes into detail about this system: ", GRAY))
+            .append(Component.text("https://www.youtube.com/watch?v=hYAUEMlugyw\n\n", YELLOW)
+                    .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL,
+                            "https://www.youtube.com/watch?v=hYAUEMlugyw"))
+                    .hoverEvent(Component.text("https://www.youtube.com/watch?v=hYAUEMlugyw").asHoverEvent()))
+            .append(Component.text("Recommended mod: ", GRAY))
+            .append(Component.text("NoChatReports (Fabric & Forge)", YELLOW)
+                    .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL,
+                    "https://modrinth.com/mod/no-chat-reports"))
+                    .hoverEvent(Component.text("https://modrinth.com/mod/no-chat-reports").asHoverEvent()))));
   }
 
   public static void invalidChange(Logger logger, ConnectedPlayer player) {
-    logger.fatal("A plugin tried to change a signed chat message. "
-        + "This is no longer possible in 1.19.1 and newer. "
-        + "Disconnecting player " + player.getUsername());
-    player.disconnect(Component.text("A proxy plugin caused an illegal protocol state. "
-        + "Contact your network administrator."));
+    invalidCancel(logger, player);
   }
 
   @Override

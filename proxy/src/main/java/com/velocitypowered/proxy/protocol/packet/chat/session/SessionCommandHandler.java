@@ -25,7 +25,7 @@ import com.velocitypowered.proxy.protocol.packet.chat.ChatAcknowledgement;
 import com.velocitypowered.proxy.protocol.packet.chat.CommandHandler;
 import java.util.concurrent.CompletableFuture;
 import net.kyori.adventure.text.Component;
-
+import static com.velocitypowered.proxy.protocol.packet.chat.keyed.KeyedChatHandler.invalidCancel;
 public class SessionCommandHandler implements CommandHandler<SessionPlayerCommand> {
 
   private final ConnectedPlayer player;
@@ -47,12 +47,7 @@ public class SessionCommandHandler implements CommandHandler<SessionPlayerComman
       CommandExecuteEvent.CommandResult result = event.getResult();
       if (result == CommandExecuteEvent.CommandResult.denied()) {
         if (packet.isSigned()) {
-          logger.fatal("A plugin tried to deny a command with signable component(s). "
-              + "This is not supported. "
-              + "Disconnecting player " + player.getUsername() + ". Command packet: " + packet);
-          player.disconnect(Component.text(
-              "A proxy plugin caused an illegal protocol state. "
-                  + "Contact your network administrator."));
+          invalidCancel(logger, player);
         }
         // We seemingly can't actually do this if signed args exist, if not, we can probs keep stuff happy
         if (player.getProtocolVersion().compareTo(ProtocolVersion.MINECRAFT_1_19_3) >= 0) {
@@ -67,12 +62,7 @@ public class SessionCommandHandler implements CommandHandler<SessionPlayerComman
           return CompletableFuture.completedFuture(packet);
         } else {
           if (packet.isSigned()) {
-            logger.fatal("A plugin tried to change a command with signed component(s). "
-                + "This is not supported. "
-                + "Disconnecting player " + player.getUsername() + ". Command packet: " + packet);
-            player.disconnect(Component.text(
-                "A proxy plugin caused an illegal protocol state. "
-                    + "Contact your network administrator."));
+            invalidCancel(logger, player);
             return CompletableFuture.completedFuture(null);
           }
 
@@ -91,12 +81,7 @@ public class SessionCommandHandler implements CommandHandler<SessionPlayerComman
             return packet;
           } else {
             if (packet.isSigned()) {
-              logger.fatal("A plugin tried to change a command with signed component(s). "
-                  + "This is not supported. "
-                  + "Disconnecting player " + player.getUsername() + ". Command packet: " + packet);
-              player.disconnect(Component.text(
-                  "A proxy plugin caused an illegal protocol state. "
-                      + "Contact your network administrator."));
+              invalidCancel(logger, player);
               return null;
             }
 
