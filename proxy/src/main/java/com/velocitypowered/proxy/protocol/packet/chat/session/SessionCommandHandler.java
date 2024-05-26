@@ -50,7 +50,7 @@ public class SessionCommandHandler implements CommandHandler<SessionPlayerComman
           invalidCancel(logger, player);
         }
         // We seemingly can't actually do this if signed args exist, if not, we can probs keep stuff happy
-        if (player.getProtocolVersion().noLessThan(ProtocolVersion.MINECRAFT_1_19_3)) {
+        if (player.getProtocolVersion().noLessThan(ProtocolVersion.MINECRAFT_1_19_3) && packet.lastSeenMessages != null) {
           return CompletableFuture.completedFuture(new ChatAcknowledgementPacket(packet.lastSeenMessages.getOffset()));
         }
         return CompletableFuture.completedFuture(null);
@@ -93,7 +93,7 @@ public class SessionCommandHandler implements CommandHandler<SessionPlayerComman
                 .toServer();
           }
         }
-        if (player.getProtocolVersion().noLessThan(ProtocolVersion.MINECRAFT_1_19_3)) {
+        if (player.getProtocolVersion().noLessThan(ProtocolVersion.MINECRAFT_1_19_3) && packet.lastSeenMessages != null) {
           return new ChatAcknowledgementPacket(packet.lastSeenMessages.getOffset());
         }
         return null;
